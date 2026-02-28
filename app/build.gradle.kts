@@ -1,5 +1,6 @@
 plugins {
     alias(libs.plugins.android.application)
+    alias(libs.plugins.ksp)
 }
 
 android {
@@ -73,7 +74,9 @@ dependencies {
     // Room (Base de Datos Local)
     implementation(libs.androidx.room.runtime)
     implementation(libs.androidx.room.ktx)
-    implementation(libs.androidx.room.compiler)
+//    implementation(libs.androidx.room.compiler)
+    ksp(libs.androidx.room.compiler)
+
 
 
 }
