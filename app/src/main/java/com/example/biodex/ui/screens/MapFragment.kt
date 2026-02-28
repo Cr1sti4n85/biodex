@@ -7,17 +7,13 @@ import android.view.View
 import android.view.ViewGroup
 import com.example.biodex.R
 import com.example.biodex.core.BaseFragment
-import com.example.biodex.databinding.FragmentHomeBinding
+import com.example.biodex.databinding.FragmentMapBinding
 import dagger.hilt.android.AndroidEntryPoint
 
-
 @AndroidEntryPoint
-class HomeFragment : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::inflate) {
+class MapFragment : BaseFragment<FragmentMapBinding>(FragmentMapBinding::inflate) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        binding.tvHome.text = "Bienvenidos a BioDex"
     }
-
 }

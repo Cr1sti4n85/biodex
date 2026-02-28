@@ -1,6 +1,8 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.ksp)
+    alias(libs.plugins.hiltAndroid)
+    id("androidx.navigation.safeargs.kotlin")
 }
 
 android {
@@ -60,7 +62,8 @@ dependencies {
 
     // Hilt (Inyección de Dependencias)
     implementation(libs.hilt.android)
-    implementation("com.squareup.moshi:moshi-kotlin:1.15.2")
+    implementation(libs.moshi.kotlin)
+    ksp(libs.hilt.compiler)
 
     // Utils
     implementation(libs.timber)
@@ -76,7 +79,5 @@ dependencies {
     implementation(libs.androidx.room.ktx)
 //    implementation(libs.androidx.room.compiler)
     ksp(libs.androidx.room.compiler)
-
-
 
 }

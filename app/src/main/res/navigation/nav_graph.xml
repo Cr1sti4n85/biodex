@@ -10,4 +10,17 @@
         android:name="com.example.biodex.ui.screens.HomeFragment"
         android:label="fragment_home"
         tools:layout="@layout/fragment_home" />
+    <fragment
+        android:id="@+id/profileFragment"
+        android:name="com.example.biodex.ui.screens.ProfileFragment"
+        android:label="ProfileFragment" />
+    <fragment
+        android:id="@+id/mapFragment"
+        android:name="com.example.biodex.ui.screens.MapFragment"
+        android:label="MapFragment" />
+    <fragment
+        android:id="@+id/createSightingFragment"
+        android:name="com.example.biodex.ui.screens.CreateSightingFragment"
+        android:label="fragment_create_sighting"
+        tools:layout="@layout/fragment_create_sighting" />
 </navigation>
