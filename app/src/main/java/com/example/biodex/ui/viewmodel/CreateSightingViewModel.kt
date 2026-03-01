@@ -61,7 +61,7 @@ class CreateSightingViewModel @Inject constructor(
         }
     }
 
-    fun submitReport() {
+    fun submit() {
         viewModelScope.launch(dispatcher) {
             _uiState.update { it.copy(isLoading = true) }
 
