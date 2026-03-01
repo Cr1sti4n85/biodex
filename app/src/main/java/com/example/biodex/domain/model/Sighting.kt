@@ -3,7 +3,7 @@ package com.example.biodex.domain.model
 import java.util.Date
 
 data class Sighting(
-    val id: String,
+    val id: String = "",
     val title: String,
     val description: String,
     val latitude: Double? = null,

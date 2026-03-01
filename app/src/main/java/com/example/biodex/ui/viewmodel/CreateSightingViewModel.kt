@@ -5,6 +5,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.biodex.R
 import com.example.biodex.core.di.IoDispatcher
+import com.example.biodex.domain.usecase.CreateSightingUseCase
+import com.example.biodex.domain.usecase.ValidateSightingUseCase
 import com.example.biodex.ui.viewmodel.state.CreateSightingUiEvent
 import com.example.biodex.ui.viewmodel.state.CreateSightingUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -21,6 +23,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class CreateSightingViewModel @Inject constructor(
+    private val validateSightingUseCase: ValidateSightingUseCase,
+    private val createSightingUseCase: CreateSightingUseCase,
     @IoDispatcher private val dispatcher: CoroutineDispatcher
 ): ViewModel() {
 
@@ -36,7 +40,7 @@ class CreateSightingViewModel @Inject constructor(
 
     fun onTitleChanged(text: String) {
         currentTitle = text
-        validateForm()
+        val result = validateSightingUseCase.execute(currentTitle, currentDescription)
     }
 
     fun onDescriptionChanged(text: String) {
@@ -67,15 +71,19 @@ class CreateSightingViewModel @Inject constructor(
 
             delay(3000)
 
-            val success = true
+            val result = createSightingUseCase(
+                title = currentTitle,
+                description = currentDescription,
+                photoUri = _uiState.value.photoUri?.toString()
+            )
 
-            if (success){
-                _uiState.update { it.copy(isLoading = false) }
+            result.onSuccess {
                 _uiEvent.send(CreateSightingUiEvent.SuccessNavigation)
-            } else {
-                _uiState.update { it.copy(isLoading = false) }
-                _uiEvent.send(CreateSightingUiEvent.ShowError("Error en la operación"))
+            }.onFailure{ error ->
+                _uiEvent.send(CreateSightingUiEvent.ShowError(error.message ?: "Error en la operación"))
             }
+
+            _uiState.update { it.copy(isLoading = false) }
 
         }
     }

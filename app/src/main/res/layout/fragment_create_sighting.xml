@@ -80,7 +80,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="24dp"
-            android:hint="Título"
+            android:hint="Nombre especie"
             app:startIconDrawable="@drawable/icon_edit_24"
             app:counterEnabled="true"
             app:counterMaxLength="50"
