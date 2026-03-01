@@ -1,14 +1,145 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.core.widget.NestedScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.screens.CreateSightingFragment">
+    android:fillViewport="true"
+    android:background="?attr/colorSurface">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
+        android:layout_height="wrap_content"
+        android:padding="24dp">
 
-</FrameLayout>
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/cv_photo_container"
+            android:layout_width="0dp"
+            android:layout_height="250dp"
+            app:cardCornerRadius="16dp"
+            app:cardElevation="4dp"
+            app:strokeWidth="1dp"
+            app:strokeColor="?attr/colorPrimary"
+            android:clickable="true"
+            android:focusable="true"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            >
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <ImageView
+                    android:id="@+id/iv_sight_photo"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:scaleType="centerCrop"
+                    android:visibility="gone"
+                    tools:src="@tools:sample/backgrounds/scenic"
+                    />
+
+                <LinearLayout
+                    android:id="@+id/ll_photo_placeholder"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:gravity="center"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent">
+
+                    <ImageView
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        android:src="@drawable/icon_photo_camera_24"
+                        app:tint="?attr/colorSecondary"
+                        android:contentDescription="Icono cámara"
+                        />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Tomar foto"
+                        android:layout_marginTop="8dp"
+                        android:textColor="?attr/colorPrimary"/>
+
+                </LinearLayout>
+
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+        </com.google.android.material.card.MaterialCardView>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/til_title"
+            style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:hint="Título"
+            app:startIconDrawable="@drawable/icon_edit_24"
+            app:counterEnabled="true"
+            app:counterMaxLength="50"
+            app:layout_constraintTop_toBottomOf="@+id/cv_photo_container"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            >
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/et_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textCapSentences"
+                android:maxLines="1"/>
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/til_description"
+            style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:hint="Descripción"
+            app:startIconDrawable="@drawable/icon_document_24"
+            app:counterEnabled="true"
+            app:counterMaxLength="300"
+            app:layout_constraintTop_toBottomOf="@+id/til_title"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            >
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/et_description"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textMultiLine|textCapSentences"
+                android:minLines="3"
+                android:gravity="top"/>
+        </com.google.android.material.textfield.TextInputLayout>
+
+
+        <Button
+            android:id="@+id/btn_submit"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="Enviar registro"
+            android:padding="16dp"
+            android:layout_marginTop="32dp"
+            android:layout_marginBottom="16dp"
+            android:backgroundTint="@color/cardview_dark_background"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            />
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.core.widget.NestedScrollView>
