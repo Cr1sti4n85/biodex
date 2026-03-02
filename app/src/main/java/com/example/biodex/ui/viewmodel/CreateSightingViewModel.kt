@@ -1,10 +1,13 @@
 package com.example.biodex.ui.viewmodel
 
+import android.content.Context
 import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.biodex.R
+import com.example.biodex.core.di.SightingFileManager
 import com.example.biodex.core.di.IoDispatcher
+import com.example.biodex.core.utils.ImageProcessor
 import com.example.biodex.domain.usecase.CreateSightingUseCase
 import com.example.biodex.domain.usecase.ValidateSightingUseCase
 import com.example.biodex.ui.viewmodel.state.CreateSightingUiEvent
@@ -19,13 +22,16 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import java.io.File
 import javax.inject.Inject
 
 @HiltViewModel
 class CreateSightingViewModel @Inject constructor(
     private val validateSightingUseCase: ValidateSightingUseCase,
     private val createSightingUseCase: CreateSightingUseCase,
-    @IoDispatcher private val dispatcher: CoroutineDispatcher
+    @IoDispatcher private val dispatcher: CoroutineDispatcher,
+    private val sightingFileManager: SightingFileManager,
+    private val imageProcessor: ImageProcessor,
 ): ViewModel() {
 
     private val _uiState = MutableStateFlow(CreateSightingUiState())
@@ -48,9 +54,21 @@ class CreateSightingViewModel @Inject constructor(
         validateForm()
     }
 
-    fun onPhotoSelected(uri: Uri) {
-        _uiState.update { it.copy(photoUri = uri) }
-        validateForm()
+    fun onPhotoSelected(context: Context, uri: Uri) {
+        viewModelScope.launch(dispatcher) {
+            _uiState.update { it.copy(isLoading = true) }
+
+            val interalFile = sightingFileManager.createInternalFile()
+            val optimizedPath = imageProcessor.process(context, uri, interalFile)
+
+            _uiState.update { state ->
+                state.copy(
+                    photoUri = optimizedPath?.let { Uri.fromFile(File(it)) },
+                    isLoading = false
+                )
+            }
+            validateForm()
+        }
     }
 
     private fun validateForm() {

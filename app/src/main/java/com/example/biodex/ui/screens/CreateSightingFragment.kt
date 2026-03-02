@@ -54,7 +54,7 @@ class CreateSightingFragment : BaseFragment<FragmentCreateSightingBinding>(
         ActivityResultContracts.PickVisualMedia()
     ) { uri ->
         if (uri != null) {
-            viewModel.onPhotoSelected(uri)
+            viewModel.onPhotoSelected(requireContext(), uri)
             binding.ivSightPhoto.setImageURI(uri)
             binding.ivSightPhoto.visibility = View.VISIBLE
             binding.viewFinder.visibility = View.GONE
@@ -127,7 +127,7 @@ class CreateSightingFragment : BaseFragment<FragmentCreateSightingBinding>(
             object : ImageCapture.OnImageSavedCallback {
                 override fun onImageSaved(outputFileResults: ImageCapture.OutputFileResults) {
                     val savedUri = Uri.fromFile(photoFile)
-                    viewModel.onPhotoSelected(savedUri)
+                    viewModel.onPhotoSelected(requireContext(), savedUri)
                     binding.ivSightPhoto.setImageURI(savedUri)
                     binding.ivSightPhoto.visibility = View.VISIBLE
                     binding.viewFinder.visibility = View.GONE
