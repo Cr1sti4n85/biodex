@@ -32,6 +32,6 @@ class SightingRepositoryImpl @Inject constructor(
     }
 
     override suspend fun uploadImage(uri: String): Result<String> {
-        return Result.success("https://biodex.io/fake/path/image1.jpg")
+        return Result.success(uri)
     }
 }

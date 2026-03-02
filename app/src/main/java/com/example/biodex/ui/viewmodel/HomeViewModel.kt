@@ -21,6 +21,10 @@ class HomeViewModel @Inject constructor(
 
     val uiState: StateFlow<HomeUiState> = _uiState.asStateFlow()
 
+    init {
+        fetchSightings()
+    }
+
     private fun fetchSightings(){
         viewModelScope.launch {
             getSightingUseCase().collect { sightings ->

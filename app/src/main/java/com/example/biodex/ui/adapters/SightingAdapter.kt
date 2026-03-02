@@ -5,6 +5,9 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import coil.load
+import coil.transform.RoundedCornersTransformation
+import com.example.biodex.R
 import com.example.biodex.databinding.ItemSightBinding
 import com.example.biodex.domain.model.Sighting
 
@@ -34,7 +37,12 @@ class SightingAdapter(
             with(binding){
                 tvTitle.text = sighting.title
                 tvDescription.text = sighting.description
-
+                ivSightImage.load(sighting.photoURL) {
+                    crossfade(true)
+                    placeholder(R.drawable.ic_launcher_foreground)
+                    error(R.drawable.ic_launcher_foreground)
+                    transformations(RoundedCornersTransformation(12f))
+                }
                 root.setOnClickListener { }
             }
         }
@@ -45,14 +53,14 @@ class SightingAdapter(
             oldItem: Sighting,
             newItem: Sighting
         ): Boolean {
-            TODO("Not yet implemented")
+            return oldItem.id == newItem.id
         }
 
         override fun areContentsTheSame(
             oldItem: Sighting,
             newItem: Sighting
         ): Boolean {
-            TODO("Not yet implemented")
+            return oldItem == newItem
         }
 
     }
