@@ -4,6 +4,7 @@ import com.example.biodex.data.repository.SightingRepositoryImpl
 import com.example.biodex.domain.repository.SightingRepository
 import dagger.Binds
 import dagger.Module
+import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
@@ -15,6 +16,6 @@ abstract class RepositoryModule {
     @Binds
     @Singleton
     abstract fun bindSightingRepository(
-        reportRepositoryImpl: SightingRepositoryImpl
+        sightingRepositoryImpl: SightingRepositoryImpl
     ): SightingRepository
 }
