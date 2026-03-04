@@ -52,7 +52,8 @@ class CreateSightingFragment : BaseFragment<FragmentCreateSightingBinding>(
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        checkCameraPermission()
+        checkAllPermissions()
+        //checkCameraPermission()
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireActivity())
         initListeners()
         initObservers()
@@ -246,9 +247,11 @@ class CreateSightingFragment : BaseFragment<FragmentCreateSightingBinding>(
 
     private fun renderState(state: CreateSightingUiState) {
         with(binding) {
+            etLocation.setText(state.address)
             btnSubmit.isEnabled = !state.isLoading && state.isFormValid
             btnSubmit.text = if (state.isLoading) "Enviando..." else "Enviar registro"
 
+            tilLocation.helperText = if (state.latitude == null) "Buscando ubicación..." else null
             tilTitle.error = state.titleError?.let { getString(it) }
 
             if (state.photoUri != null) {
@@ -273,6 +276,21 @@ class CreateSightingFragment : BaseFragment<FragmentCreateSightingBinding>(
     private fun hideKeyboard() {
         val imm = requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         imm.hideSoftInputFromWindow(view?.windowToken, 0)
+    }
+
+    private fun checkAllPermissions() {
+        if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED) {
+            requestPermissionLauncher.launch(Manifest.permission.CAMERA)
+        }
+
+        if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED) {
+            locationPermissionLauncher.launch(
+                arrayOf(
+                    Manifest.permission.ACCESS_FINE_LOCATION,
+                    Manifest.permission.ACCESS_COARSE_LOCATION
+                )
+            )
+        }
     }
 
 }

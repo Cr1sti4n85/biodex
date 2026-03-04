@@ -96,7 +96,26 @@
 
         </com.google.android.material.textfield.TextInputLayout>
 
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/til_location"
+            style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
+            android:layout_width="0dp"
+            android:layout_marginTop="8dp"
+            android:layout_height="wrap_content"
+            android:hint="Ubicación Detectada"
+            app:startIconDrawable="@drawable/icon_location_on_24"
+            app:layout_constraintTop_toBottomOf="@+id/til_title"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            >
 
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/et_location"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:enabled="false" />
+
+        </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/til_description"
@@ -108,7 +127,7 @@
             app:startIconDrawable="@drawable/icon_document_24"
             app:counterEnabled="true"
             app:counterMaxLength="300"
-            app:layout_constraintTop_toBottomOf="@+id/til_title"
+            app:layout_constraintTop_toBottomOf="@+id/til_location"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             >
