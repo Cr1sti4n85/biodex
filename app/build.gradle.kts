@@ -72,6 +72,7 @@ dependencies {
     implementation(libs.androidx.camera.camera2)
     implementation(libs.androidx.camera.lifecycle)
     implementation(libs.androidx.camera.view)
+    implementation(libs.play.services.location)
 
     // Retrofit (Red/API)
     implementation(libs.retrofit)
@@ -85,5 +86,5 @@ dependencies {
     ksp(libs.androidx.room.compiler)
 
     // Metadata Image
-    implementation("androidx.exifinterface:exifinterface:1.3.0")
+    implementation(libs.androidx.exifinterface)
 }

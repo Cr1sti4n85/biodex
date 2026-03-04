@@ -19,10 +19,10 @@ object DatabaseModule {
     @Singleton
     fun provideDatabase(@ApplicationContext context: Context): BioDexDatabase {
         return Room.databaseBuilder(
-            context,
-            BioDexDatabase::class.java,
-            "biodex_db"
-        ).fallbackToDestructiveMigration()
+                context,
+                BioDexDatabase::class.java,
+                "biodex_db"
+            ).fallbackToDestructiveMigration(false)
             .build()
     }
 

@@ -7,6 +7,9 @@ data class CreateSightingUiState(
     val titleError: Int? = null,
     val descriptionError: Int? = null,
     val photoUri: Uri? = null,
-    val isFormValid: Boolean = false
+    val isFormValid: Boolean = false,
+    val latitude: Double? = null,
+    val longitude: Double? = null,
+    val address: String = ""
 ) {
 }

@@ -1,9 +1,13 @@
 package com.example.biodex.ui.screens
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.pm.PackageManager
+import android.location.Geocoder
+import android.location.Location
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.view.View
 import android.view.inputmethod.InputMethodManager
@@ -16,7 +20,6 @@ import androidx.camera.core.ImageCaptureException
 import androidx.camera.core.Preview
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.core.content.ContextCompat
-import androidx.core.net.toUri
 import androidx.core.view.isVisible
 import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.viewModels
@@ -27,10 +30,16 @@ import com.example.biodex.databinding.FragmentCreateSightingBinding
 import com.example.biodex.ui.viewmodel.CreateSightingViewModel
 import com.example.biodex.ui.viewmodel.state.CreateSightingUiEvent
 import com.example.biodex.ui.viewmodel.state.CreateSightingUiState
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationRequest
+import com.google.android.gms.location.LocationServices
+import com.google.android.gms.location.Priority
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
 import java.io.File
+import java.util.Locale
 import kotlin.getValue
+import kotlin.text.get
 
 @AndroidEntryPoint
 class CreateSightingFragment : BaseFragment<FragmentCreateSightingBinding>(
@@ -38,6 +47,16 @@ class CreateSightingFragment : BaseFragment<FragmentCreateSightingBinding>(
 ) {
     private val viewModel: CreateSightingViewModel by viewModels()
     private var imageCapture: ImageCapture? = null
+
+    private lateinit var fusedLocationClient: FusedLocationProviderClient
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        checkCameraPermission()
+        fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireActivity())
+        initListeners()
+        initObservers()
+    }
 
     private val requestPermissionLauncher = registerForActivityResult(
         ActivityResultContracts.RequestPermission()
@@ -50,6 +69,62 @@ class CreateSightingFragment : BaseFragment<FragmentCreateSightingBinding>(
 
     }
 
+    private val locationPermissionLauncher = registerForActivityResult(
+        ActivityResultContracts.RequestMultiplePermissions()
+    ) { permissions ->
+        val fineGranted = permissions[Manifest.permission.ACCESS_FINE_LOCATION] ?: false
+        val coarseGranted = permissions[Manifest.permission.ACCESS_COARSE_LOCATION] ?: false
+
+        if (fineGranted || coarseGranted) {
+            fetchDeviceLocation()
+        } else {
+            Toast.makeText(requireContext(), "No se puede generar la ubicación", Toast.LENGTH_LONG).show()
+        }
+    }
+
+    @SuppressLint("MissingPermission")
+    private fun fetchDeviceLocation() {
+        fusedLocationClient.lastLocation.addOnSuccessListener { location: Location? ->
+            if (location != null) {
+                viewModel.onLocationCaptured(location.latitude, location.longitude)
+                getAddressFromCoords(location.latitude, location.longitude)
+            } else {
+                val locationRequest = LocationRequest.Builder(Priority.PRIORITY_HIGH_ACCURACY, 100).build()
+
+                fusedLocationClient.getCurrentLocation(Priority.PRIORITY_HIGH_ACCURACY, null)
+                    .addOnSuccessListener { freshLocation: Location? ->
+                        freshLocation?.let {
+                            viewModel.onLocationCaptured(it.latitude, it.longitude)
+                            getAddressFromCoords(it.latitude, it.longitude)
+                        } ?: run {
+                            Toast.makeText(requireContext(), "GPS apagado o sin señal. Intentalo de nuevo", Toast.LENGTH_SHORT).show()
+                        }
+                    }
+            }
+        }
+    }
+
+    private fun getAddressFromCoords(lat: Double, lng: Double) {
+        val geocoder = Geocoder(requireContext(), Locale.getDefault())
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            geocoder.getFromLocation(lat, lng, 1) { addresses ->
+                val address = addresses.firstOrNull()?.getAddressLine(0)
+                activity?.runOnUiThread {
+                    viewModel.onAddressUpdate(address ?: "Ubicación no encontrada")
+                }
+            }
+        } else {
+            try {
+                @Suppress("DEPRECATION")
+                val address = geocoder.getFromLocation(lat, lng, 1)?.firstOrNull()?.getAddressLine(0)
+                viewModel.onAddressUpdate(address ?: "Ubicación no encontrada")
+            } catch (e: Exception) {
+                viewModel.onAddressUpdate("Error al obtener la ubicación")
+            }
+        }
+    }
+
     private val pickMediaLauncher = registerForActivityResult(
         ActivityResultContracts.PickVisualMedia()
     ) { uri ->
@@ -59,13 +134,6 @@ class CreateSightingFragment : BaseFragment<FragmentCreateSightingBinding>(
             binding.ivSightPhoto.visibility = View.VISIBLE
             binding.viewFinder.visibility = View.GONE
         }
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        checkCameraPermission()
-        initListeners()
-        initObservers()
     }
 
     private fun checkCameraPermission(){
