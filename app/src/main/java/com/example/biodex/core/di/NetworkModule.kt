@@ -1,6 +1,7 @@
 package com.example.biodex.core.di
 
 import com.example.biodex.BuildConfig
+import com.example.biodex.data.remote.api.BioDexApiService
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import dagger.Module
@@ -50,5 +51,11 @@ object NetworkModule {
             .client(okHttpClient)
             .addConverterFactory(MoshiConverterFactory.create(moshi))
             .build()
+    }
+
+    @Provides
+    @Singleton
+    fun provideBioDexApiService(retrofit: Retrofit): BioDexApiService {
+        return retrofit.create(BioDexApiService::class.java)
     }
 }

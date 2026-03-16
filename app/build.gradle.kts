@@ -18,7 +18,7 @@ android {
         versionCode = 1
         versionName = "1.0"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-        buildConfigField("String", "BASE_URL", "\"https://65...mockapi.io/api/v1/\"")
+        buildConfigField("String", "BASE_URL", "\"https://69b81180ffbcd02860971591.mockapi.io/api/v1/\"")
     }
 
     buildFeatures {
