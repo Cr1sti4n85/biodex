@@ -2,6 +2,7 @@ package com.example.biodex.core.di
 
 import com.example.biodex.BuildConfig
 import com.example.biodex.data.remote.api.BioDexApiService
+import com.example.biodex.data.remote.interceptor.ErrorInterceptor
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import dagger.Module
@@ -30,16 +31,17 @@ object NetworkModule {
     @Provides
     @Singleton
     fun provideOkHttpClient(): OkHttpClient {
-        val interceptor = HttpLoggingInterceptor().apply {
+        val loggingInterceptor = HttpLoggingInterceptor().apply {
             level = if (BuildConfig.DEBUG) HttpLoggingInterceptor.Level.HEADERS
             else HttpLoggingInterceptor.Level.NONE
         }
 
         return OkHttpClient.Builder()
-            .addInterceptor(interceptor)
-            .connectTimeout(30, TimeUnit.SECONDS)
-            .readTimeout(30, TimeUnit.SECONDS)
-            .writeTimeout(30, TimeUnit.SECONDS)
+            .addInterceptor(ErrorInterceptor())
+            .addInterceptor(loggingInterceptor)
+            .connectTimeout(15, TimeUnit.SECONDS)
+            .readTimeout(15, TimeUnit.SECONDS)
+            .writeTimeout(15, TimeUnit.SECONDS)
             .build()
     }
 

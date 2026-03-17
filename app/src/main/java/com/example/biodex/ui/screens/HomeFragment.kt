@@ -14,6 +14,7 @@ import com.example.biodex.core.extension.collectFlow
 import com.example.biodex.databinding.FragmentHomeBinding
 import com.example.biodex.ui.adapters.SightingAdapter
 import com.example.biodex.ui.viewmodel.HomeViewModel
+import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
 
@@ -49,17 +50,29 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::infl
     private fun initObservers() {
         collectFlow(viewModel.uiState) { state ->
             when (state) {
-                is HomeViewModel.HomeUiState.Loading -> { /* AGREGAR UN PROGRESS ANIMADO */ }
-                is HomeViewModel.HomeUiState.Empty -> {
-                    binding.llEmptyState.isVisible = true
+                is HomeViewModel.HomeUiState.Loading -> {
+                    binding.progressIndicator.isVisible = true
                     binding.rvSights.isVisible = false
+                    binding.llEmptyState.isVisible = false
+                }
+                is HomeViewModel.HomeUiState.Empty -> {
+                    binding.rvSights.isVisible = false
+                    binding.progressIndicator.isVisible = false
                 }
                 is HomeViewModel.HomeUiState.Success -> {
-                    binding.llEmptyState.isVisible = false
+                    binding.llEmptyState.visibility = View.GONE
                     binding.rvSights.isVisible = true
+                    binding.progressIndicator.isVisible = false
                     sightingAdapter.submitList(state.sightings)
                 }
-                is HomeViewModel.HomeUiState.Error -> { /* MENSAJE DE ERROR O ANIMACIÓN */ }
+                is HomeViewModel.HomeUiState.Error -> {
+                    binding.progressIndicator.isVisible = false
+                    Snackbar.make(binding.root, state.message, Snackbar.LENGTH_LONG)
+                        .setAction("Reintentar") {
+
+                        }
+                        .show()
+                }
             }
         }
     }

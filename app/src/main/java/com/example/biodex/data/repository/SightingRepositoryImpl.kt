@@ -25,19 +25,28 @@ class SightingRepositoryImpl @Inject constructor(
     }
 
     private suspend fun syncSightings(){
-        try {
-            val remoteRes = remoteDataSource.fetchSightings()
-            remoteRes.onSuccess { dtos ->
-                val entities = dtos.map {
-                    it.toDomain().toEntity()
-                }
-                entities.forEach { sightingDAO.insertSighting(it) }
-            }.onFailure {
-                Timber.d("Error en l sincronización: ${it.message}")
+        val remoteRes = remoteDataSource.fetchSightings()
+        remoteRes.onSuccess { dtos ->
+            val entities = dtos.map {
+                it.toDomain().toEntity()
             }
-        } catch (e: Exception) {
-            Timber.d("Ha ocurrido un error: ${e.message}")
-            }
+            entities.forEach { sightingDAO.insertSighting(it) }
+        }.onFailure {
+            error -> throw error
+        }
+//        try {
+//            val remoteRes = remoteDataSource.fetchSightings()
+//            remoteRes.onSuccess { dtos ->
+//                val entities = dtos.map {
+//                    it.toDomain().toEntity()
+//                }
+//                entities.forEach { sightingDAO.insertSighting(it) }
+//            }.onFailure {
+//                Timber.d("Error en l sincronización: ${it.message}")
+//            }
+//        } catch (e: Exception) {
+//            Timber.d("Ha ocurrido un error: ${e.message}")
+//            }
 
     }
 
